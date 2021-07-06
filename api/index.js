@@ -4,10 +4,13 @@ const express = require('express');
 
 const app = express();
 
+const IP = '0.0.0.0';
+const PORT = 3001;
 
 
-const server = app.listen(3001, '192.168.1.243', function() {
-    console.log('server running on port 3001');
+
+const server = app.listen(PORT, IP, function() {
+    console.log(`server running on port http://${IP}:${PORT}`);
 });
 
 
