@@ -1,5 +1,5 @@
 <template>
-    <main @mousemove="mousemove">
+    <main @mousemove="mousemove" :style="{clipPath: `circle(${lightRadious}px at ${x}px ${y}px)`}">
         <h1 style="margin-top: 0;">Tank Survivor</h1>
         <p> Comming soon...!</p>
         <p><b>X</b>: {{x}}</p>
@@ -15,6 +15,7 @@ export default {
         return {
             x: 0,
             y: 0,
+            lightRadious: 140,
             socket : io('http://0.0.0.0:3001')
         }
     },
@@ -42,5 +43,6 @@ main {
     height: 100vh;
     width: 100vw;
     background-image: url('~@/assets/images/grass.jpeg');
+    
 }
 </style>
