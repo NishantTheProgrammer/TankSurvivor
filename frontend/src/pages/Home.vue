@@ -1,10 +1,10 @@
 <template>
-    <div @mousemove="mousemove">
-        <h1>Tank Survivor</h1>
+    <main @mousemove="mousemove">
+        <h1 style="margin-top: 0;">Tank Survivor</h1>
         <p> Comming soon...!</p>
         <p><b>X</b>: {{x}}</p>
         <p><b>Y</b>: {{y}}</p>
-    </div>
+    </main>
 </template>
 
 
@@ -15,7 +15,7 @@ export default {
         return {
             x: 0,
             y: 0,
-            socket : io('http://192.168.1.243:3001')
+            socket : io('http://0.0.0.0:3001')
         }
     },
     mounted() {
@@ -35,3 +35,12 @@ export default {
     
 }
 </script>
+
+
+<style scoped>
+main {
+    height: 100vh;
+    width: 100vw;
+    background-image: url('~@/assets/images/grass.jpeg');
+}
+</style>
