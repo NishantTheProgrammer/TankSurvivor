@@ -4,7 +4,7 @@ const express = require('express');
 
 const app = express();
 
-const IP = '0.0.0.0';
+const IP = '192.168.1.243';
 const PORT = 3001;
 
 
