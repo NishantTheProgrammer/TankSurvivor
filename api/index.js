@@ -4,7 +4,7 @@ const express = require('express');
 
 const app = express();
 
-const IP = '192.168.1.243';
+const IP = 'localhost';
 const PORT = 3001;
 
 
@@ -16,10 +16,16 @@ const server = app.listen(PORT, IP, function() {
 
 const io = require('socket.io')(server);
 
-io.on('connection', function(socket) {
-    console.log(socket.id)
+let data = {};
+let bgColors = {};
 
-    socket.on('UPDATE_CORDS', function(data) {
-        io.emit('CORDS', data)
+io.on('connection', function(socket) {
+    console.log(socket.id);
+    bgColors[socket.id] = '#' + ((1<<24)*Math.random() | 0).toString(16);
+
+    socket.on('UPDATE_CORDS', function(cords) {
+        data[socket.id] = {...cords, backgroundColor: bgColors[socket.id]};
+        
+        io.emit('CORDS', data);
     });
 });

@@ -1,15 +1,17 @@
 <template>
   <main @mousemove="mousemove" 
-    :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}"
+    
   >
+  <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
     <div
       class="light"
+      v-for="(cord, socketId) in cords" :key="socketId"
       :style="{
-                height: (lightRadious * 2) + 'vh',
-                width: (lightRadious * 2) + 'vh',
-                left: x + 'px',
-                top: y + 'px',
-                backgroundImage: `radial-gradient(#ffffff00, black)`
+                height: (lightRadious * 1) + 'vh',
+                width: (lightRadious * 1) + 'vh',
+                left: cord.x + 'px',
+                top: cord.y + 'px',
+                backgroundImage: `radial-gradient(#ffffff00, ${cord.backgroundColor})`
             }"
     ></div>
     <h1 style="margin-top: 0;">Tank Survivor</h1>
@@ -31,16 +33,15 @@ import io from "socket.io-client";
 export default {
   data() {
     return {
-      x: 0,
-      y: 0,
+      cords: {},
       lightRadious: 15,
-      socket: io("http://192.168.1.243:3001"),
+      socket: io("http://localhost:3001"),
     };
   },
   mounted() {
-    this.socket.on("CORDS", (data) => {
-      this.x = data.x;
-      this.y = data.y;
+    this.socket.on("CORDS", (cords) => {
+      console.log(cords);
+      this.cords = cords;
     });
   },
   methods: {
@@ -60,9 +61,16 @@ main {
   height: 100vh;
   width: 100vw;
   background-image: url("~@/assets/images/grass.jpeg");
+  
 }
 .light {
     position: absolute;
+    border-radius: 50%;
     transform: translate(-50%, -50%);
+}
+</style>
+<style>
+body {
+  overflow: hidden;
 }
 </style>
