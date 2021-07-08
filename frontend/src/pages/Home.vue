@@ -1,56 +1,31 @@
 <template>
-  <main @mousemove="mousemove" 
-    
-  >
-  <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
-    <div
-      class="light"
-      v-for="(cord, socketId) in cords" :key="socketId"
-      :style="{
-                height: (lightRadious * 1) + 'vh',
-                width: (lightRadious * 1) + 'vh',
-                left: cord.x + 'px',
-                top: cord.y + 'px',
-                backgroundImage: `radial-gradient(#ffffff00, ${cord.backgroundColor})`
-            }"
-    ></div>
-    <h1 style="margin-top: 0;">Tank Survivor</h1>
-    <p>Comming soon...!</p>
-    <p>
-      <b>X</b>
-      : {{x}}
-    </p>
-    <p>
-      <b>Y</b>
-      : {{y}}
-    </p>
+  <main>
+    <form @submit.prevent="submit">
+        <input type="text" required v-model="formData.roomNo" placeholder="Room No." style="max-width: 180px;"/>
+        <input type="text" required v-model="formData.name" placeholder="Your Name"/>
+        <input type="submit" value="Join">
+    </form>
   </main>
 </template>
 
 
 <script>
-import io from "socket.io-client";
 export default {
   data() {
     return {
-      cords: {},
-      lightRadious: 15,
-      socket: io("http://localhost:3001"),
+        formData: {
+            roomNo: '',
+            name: ''
+        }
     };
   },
   mounted() {
-    this.socket.on("CORDS", (cords) => {
-      console.log(cords);
-      this.cords = cords;
-    });
   },
   methods: {
-    mousemove(e) {
-      this.socket.emit("UPDATE_CORDS", {
-        x: e.x,
-        y: e.y,
-      });
-    },
+      submit() {
+          console.log('hello')
+          this.$router.push(`/playground/${this.formData.roomNo}`, { query: { name: this.formData.name }});
+      }
   },
 };
 </script>
@@ -60,17 +35,31 @@ export default {
 main {
   height: 100vh;
   width: 100vw;
-  background-image: url("~@/assets/images/grass.jpeg");
-  
+  background-image: url("~@/assets/images/background.jpg");
+  background-size: cover;
 }
-.light {
+form {
     position: absolute;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+    bottom: 40px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50px;
+    overflow: hidden;
 }
-</style>
-<style>
-body {
-  overflow: hidden;
+form input {
+    font-size: 25px;
+    padding: 20px 40px;
+    border: none;
+    outline: none;
+}
+form input[type="submit"] {
+    background-color: rgb(56, 128, 77);
+    color: white;
+    cursor: pointer;
+}
+form input[type="submit"]:hover, form input[type="submit"]:focus {
+    background-color: rgb(28, 88, 46);
+    color: white;
+    cursor: pointer;
 }
 </style>
