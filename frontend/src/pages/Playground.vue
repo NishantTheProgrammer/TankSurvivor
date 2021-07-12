@@ -3,6 +3,7 @@
     
   >
   <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
+    <tank></tank>
     <div
       class="light"
       v-for="(cord, socketId) in cords" :key="socketId"
@@ -30,7 +31,10 @@
 
 <script>
 import io from "socket.io-client";
+import Tank from '../components/Tank.vue';
+
 export default {
+  components: { Tank},
   data() {
     return {
       cords: {},
@@ -60,7 +64,7 @@ export default {
 main {
   height: 100vh;
   width: 100vw;
-  background-image: url("~@/assets/images/grass.jpeg");
+  background-image: url("~@/assets/images/desert.jpg");
   
 }
 .light {
