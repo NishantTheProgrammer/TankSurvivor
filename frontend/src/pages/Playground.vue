@@ -13,7 +13,7 @@
         top: cord.y + 'px',
         backgroundImage: `radial-gradient(#ffffff00, ${cord.backgroundColor})`,
       }"
-    ></div> -->
+    ></div>-->
     <h1 style="margin-top: 0">Tank Survivor</h1>
     <p>Comming soon...!</p>
   </main>
@@ -33,7 +33,6 @@ export default {
       tank: {},
       cannon: {},
       socket: io("http://localhost:3001"),
-      tankRotationDegree: 2,
     };
   },
   mounted() {
@@ -46,10 +45,15 @@ export default {
         case "a":
           this.moveLeft();
           break;
+        case "w":
+          this.moveForward();
+          break;
+        case "s":
+          this.moveBackword();
+          break;
       }
     });
     this.socket.on("CANNON", (cannon) => {
-      console.log(cannon);
       this.cannon = cannon;
     });
     this.socket.on("TANK", (tank) => {
@@ -64,12 +68,17 @@ export default {
       });
     },
     moveLeft() {
-      this.socket.emit("ROTATE_TANK", -this.tankRotationDegree);
-      console.log(-10);
+      this.socket.emit("ROTATE_TANK", "left");
     },
     moveRight() {
-      this.socket.emit("ROTATE_TANK", this.tankRotationDegree);
+      this.socket.emit("ROTATE_TANK", "right");
     },
+    moveForward() {
+      this.socket.emit('GO_FORWARD');
+    },
+    moveBackword() {
+      this.socket.emit('GO_BACK');
+    }
   },
 };
 </script>

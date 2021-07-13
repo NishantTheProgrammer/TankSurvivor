@@ -16,6 +16,9 @@ const server = app.listen(PORT, IP, function() {
 
 const io = require('socket.io')(server);
 
+
+const ROTATION_DEGREE = 1;
+const SPEED = 3;
 let data = {};
 let bgColors = {};
 let tank = {
@@ -40,8 +43,25 @@ io.on('connection', function(socket) {
         });
     });
 
-    socket.on('ROTATE_TANK', function(deg) {
-        tank.angle = tank.angle + deg;
+    socket.on('ROTATE_TANK', function(direction) {
+        if(direction === 'left') {
+            tank.angle = tank.angle - ROTATION_DEGREE;
+        }
+        else if(direction === 'right') {
+            tank.angle = tank.angle + ROTATION_DEGREE;
+        }
+        io.emit('TANK', tank);
+    });
+
+    socket.on('GO_FORWARD', function() {
+        tank.x += -Math.sin((Math.PI / 180) * (tank.angle)) * SPEED;
+        tank.y += Math.cos((Math.PI / 180) * (tank.angle)) * SPEED;
+        io.emit('TANK', tank);
+    })
+    
+    socket.on('GO_BACK', function() {
+        tank.x -= -Math.sin((Math.PI / 180) * (tank.angle)) * SPEED;
+        tank.y -= Math.cos((Math.PI / 180) * (tank.angle)) * SPEED;
         io.emit('TANK', tank);
     });
 });
