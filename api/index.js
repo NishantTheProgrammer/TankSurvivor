@@ -17,8 +17,8 @@ const server = app.listen(PORT, IP, function() {
 const io = require('socket.io')(server);
 
 
-const ROTATION_DEGREE = 1;
-const SPEED = 3;
+const ROTATION_DEGREE = 3;
+const SPEED = 5;
 let data = {};
 let bgColors = {};
 let tank = {

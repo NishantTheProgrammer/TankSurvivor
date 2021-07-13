@@ -33,25 +33,44 @@ export default {
       tank: {},
       cannon: {},
       socket: io("http://localhost:3001"),
+      keyPresses: {},
+      interval: null,
     };
   },
+  watch: {
+    keyPresses: {
+      handler(val) {
+        clearInterval(this.interval);
+        this.interval = setInterval(() => {
+          Object.entries(val).forEach(([key, isPressed]) => {
+            if (isPressed) {
+              switch (key) {
+                case "d":
+                  this.moveRight();
+                  break;
+                case "a":
+                  this.moveLeft();
+                  break;
+                case "w":
+                  this.moveForward();
+                  break;
+                case "s":
+                  this.moveBackword();
+                  break;
+              }
+            }
+          });
+        }, 30);
+      },
+      deep: true,
+    },
+  },
   mounted() {
-    window.addEventListener("keypress", (e) => {
-      console.log(String.fromCharCode(e.keyCode));
-      switch (String.fromCharCode(e.keyCode)) {
-        case "d":
-          this.moveRight();
-          break;
-        case "a":
-          this.moveLeft();
-          break;
-        case "w":
-          this.moveForward();
-          break;
-        case "s":
-          this.moveBackword();
-          break;
-      }
+    window.addEventListener("keydown", (e) => {
+      this.keyPresses[e.key] = true;
+    });
+    window.addEventListener("keyup", (e) => {
+      this.keyPresses[e.key] = false;
     });
     this.socket.on("CANNON", (cannon) => {
       this.cannon = cannon;
@@ -74,11 +93,11 @@ export default {
       this.socket.emit("ROTATE_TANK", "right");
     },
     moveForward() {
-      this.socket.emit('GO_FORWARD');
+      this.socket.emit("GO_FORWARD");
     },
     moveBackword() {
-      this.socket.emit('GO_BACK');
-    }
+      this.socket.emit("GO_BACK");
+    },
   },
 };
 </script>
