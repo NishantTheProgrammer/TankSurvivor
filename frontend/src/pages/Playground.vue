@@ -1,59 +1,74 @@
 <template>
-  <main @mousemove="mousemove" 
-    
-  >
-  <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
-    <tank></tank>
-    <div
+  <main @mousemove="mousemove">
+    <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
+    <tank :tankData="tank" :cannonData="cannon" :width="300"></tank>
+    <!-- <div
       class="light"
-      v-for="(cord, socketId) in cords" :key="socketId"
+      v-for="(cord, socketId) in cords"
+      :key="socketId"
       :style="{
-                height: (lightRadious * 1) + 'vh',
-                width: (lightRadious * 1) + 'vh',
-                left: cord.x + 'px',
-                top: cord.y + 'px',
-                backgroundImage: `radial-gradient(#ffffff00, ${cord.backgroundColor})`
-            }"
-    ></div>
-    <h1 style="margin-top: 0;">Tank Survivor</h1>
+        height: lightRadious * 1 + 'vh',
+        width: lightRadious * 1 + 'vh',
+        left: cord.x + 'px',
+        top: cord.y + 'px',
+        backgroundImage: `radial-gradient(#ffffff00, ${cord.backgroundColor})`,
+      }"
+    ></div> -->
+    <h1 style="margin-top: 0">Tank Survivor</h1>
     <p>Comming soon...!</p>
-    <p>
-      <b>X</b>
-      : {{x}}
-    </p>
-    <p>
-      <b>Y</b>
-      : {{y}}
-    </p>
   </main>
 </template>
 
 
 <script>
 import io from "socket.io-client";
-import Tank from '../components/Tank.vue';
+import Tank from "../components/Tank.vue";
 
 export default {
-  components: { Tank},
+  components: { Tank },
   data() {
     return {
       cords: {},
       lightRadious: 15,
+      tank: {},
+      cannon: {},
       socket: io("http://localhost:3001"),
+      tankRotationDegree: 2,
     };
   },
   mounted() {
-    this.socket.on("CORDS", (cords) => {
-      console.log(cords);
-      this.cords = cords;
+    window.addEventListener("keypress", (e) => {
+      console.log(String.fromCharCode(e.keyCode));
+      switch (String.fromCharCode(e.keyCode)) {
+        case "d":
+          this.moveRight();
+          break;
+        case "a":
+          this.moveLeft();
+          break;
+      }
+    });
+    this.socket.on("CANNON", (cannon) => {
+      console.log(cannon);
+      this.cannon = cannon;
+    });
+    this.socket.on("TANK", (tank) => {
+      this.tank = tank;
     });
   },
   methods: {
     mousemove(e) {
-      this.socket.emit("UPDATE_CORDS", {
+      this.socket.emit("ROTATE_CANNON", {
         x: e.x,
         y: e.y,
       });
+    },
+    moveLeft() {
+      this.socket.emit("ROTATE_TANK", -this.tankRotationDegree);
+      console.log(-10);
+    },
+    moveRight() {
+      this.socket.emit("ROTATE_TANK", this.tankRotationDegree);
     },
   },
 };
@@ -65,12 +80,11 @@ main {
   height: 100vh;
   width: 100vw;
   background-image: url("~@/assets/images/desert.jpg");
-  
 }
 .light {
-    position: absolute;
-    border-radius: 50%;
-    transform: translate(-50%, -50%);
+  position: absolute;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
 }
 </style>
 <style>
