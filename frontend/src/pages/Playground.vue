@@ -1,7 +1,10 @@
 <template>
   <main @mousemove="mousemove">
     <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
-    <tank :tankData="tank" :cannonData="cannon" :width="300"></tank>
+    <statistics v-if="statistics" :statistics="statistics" />
+    <tank v-if="tank" :tankData="tank" :cannonData="cannon" :width="300" />
+    
+    
     <!-- <div
       class="light"
       v-for="(cord, socketId) in cords"
@@ -23,18 +26,20 @@
 <script>
 import io from "socket.io-client";
 import Tank from "../components/Tank.vue";
+import Statistics from '../components/Statistics.vue'
 
 export default {
-  components: { Tank },
+  components: { Tank, Statistics },
   data() {
     return {
       cords: {},
       lightRadious: 15,
-      tank: {},
-      cannon: {},
+      tank: null,
+      cannon: null,
       socket: io("http://localhost:3001"),
       keyPresses: {},
       interval: null,
+      statistics: null
     };
   },
   watch: {
@@ -78,6 +83,12 @@ export default {
     this.socket.on("TANK", (tank) => {
       this.tank = tank;
     });
+    this.socket.on("STATISTICS", (statistics) => {
+      this.statistics = statistics;
+    });
+    this.socket.on("ERROR", (error) => {
+      console.error(error)
+    });
   },
   methods: {
     mousemove(e) {
@@ -114,9 +125,17 @@ main {
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
+
 </style>
 <style>
 body {
   overflow: hidden;
+}
+td svg {
+  font-size: 20px !important;
+}
+td progress {
+  width: 100%;
+  height: 25px;
 }
 </style>
