@@ -9,7 +9,7 @@
     <table style="width: 100%">
       <tr>
         <td width="20%">
-          <font-awesome-icon icon="heartbeat" :style="{color: '#ca0000'}" />
+          <img class="icon" src="../assets/images/health.png" alt="">
         </td>
         <td width="80%">
           <progress :value="statistics.health" max="100" />
@@ -17,7 +17,7 @@
       </tr>
       <tr>
         <td width="20%">
-          <font-awesome-icon icon="gas-pump" :style="{color: '#ca0000'}" />
+          <img class="icon" src="../assets/images/fuel.png" alt="">
         </td>
         <td width="80%">
           <progress :value="statistics.fuel" max="100" />
@@ -25,7 +25,7 @@
       </tr>
       <tr>
         <td>
-          <font-awesome-icon icon="bomb" />
+          <img class="icon" src="../assets/images/bomb.png" alt="">
         </td>
         <td>
           <progress :value="statistics.bomb" max="8" />
@@ -33,7 +33,7 @@
       </tr>
       <tr>
         <td>
-          <font-awesome-icon icon="dot-circle" :style="{color: '#be761a'}" />
+          <img class="icon" src="../assets/images/bullets.png" alt="">
         </td>
         <td>
             <progress :value="statistics.bullet" max="50" />
@@ -68,5 +68,8 @@ export default {
 .lifes svg {
   padding: 5px;
   font-size: 20px;
+}
+.icon {
+  width: 25px;
 }
 </style>

@@ -31,6 +31,7 @@ export default {
 .container {
     position: absolute;
     background: yellow;
+    z-index: 100;
 }
 .container img {
     position: absolute;

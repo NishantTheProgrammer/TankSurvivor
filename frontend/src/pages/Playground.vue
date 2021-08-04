@@ -2,9 +2,16 @@
   <main @mousemove="mousemove">
     <!-- :style="{clipPath: `circle(${lightRadious}vh at ${x}px ${y}px)`}" -->
     <statistics v-if="statistics" :statistics="statistics" />
-    <tank v-if="tank" :tankData="tank" :cannonData="cannon" :width="300" />
-    
-    
+    <tank v-if="tank" :tankData="tank" :cannonData="cannon" :width="150" />
+
+    <img
+      v-for="(obj, i) in dataObjects"
+      class="object"
+      :key="i"
+      :src="getImageURL(obj.item)"
+      :style="{left: obj.x + '%', top: obj.y + '%'}"
+    />
+
     <!-- <div
       class="light"
       v-for="(cord, socketId) in cords"
@@ -26,7 +33,7 @@
 <script>
 import io from "socket.io-client";
 import Tank from "../components/Tank.vue";
-import Statistics from '../components/Statistics.vue'
+import Statistics from "../components/Statistics.vue";
 
 export default {
   components: { Tank, Statistics },
@@ -36,10 +43,11 @@ export default {
       lightRadious: 15,
       tank: null,
       cannon: null,
+      dataObjects: [],
       socket: io("http://localhost:3001"),
       keyPresses: {},
       interval: null,
-      statistics: null
+      statistics: null,
     };
   },
   watch: {
@@ -87,10 +95,17 @@ export default {
       this.statistics = statistics;
     });
     this.socket.on("ERROR", (error) => {
-      console.error(error)
+      console.error(error);
+    });
+    this.socket.on("DATA_OBJECTS", (dataObjects) => {
+      this.dataObjects = dataObjects;
+      console.log(dataObjects);
     });
   },
   methods: {
+    getImageURL(item) {
+      return require("../assets/images/" + item + ".png");
+    },
     mousemove(e) {
       this.socket.emit("ROTATE_CANNON", {
         x: e.x,
@@ -125,7 +140,6 @@ main {
   border-radius: 50%;
   transform: translate(-50%, -50%);
 }
-
 </style>
 <style>
 body {
@@ -137,5 +151,10 @@ td svg {
 td progress {
   width: 100%;
   height: 25px;
+}
+.object {
+  position: absolute; 
+  transform: translate(-50%, -50%);
+  height: 30px;
 }
 </style>

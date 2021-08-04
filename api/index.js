@@ -18,9 +18,9 @@ const io = require('socket.io')(server);
 
 
 const ROTATION_DEGREE = 3;
-const FUEL_COST = 0.1;
+const FUEL_COST = 0.05;
 const SPEED = 5;
-let data = {};
+let dataObjects = [];
 let bgColors = {};
 let tank = {
     angle: 0,
@@ -37,11 +37,31 @@ let statistics = {
     bullet: 40,
     bomb: 5
 }
+const itemList = ['fuel', 'torch', 'health', 'bomb', 'bullets'];
+const randInt = (min, max) => { // min and max included 
+    return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
+const getRandomItem = () => {
+    return {
+        x: randInt(0, 100),
+        y: randInt(0, 100),
+        item: itemList[Math.floor(Math.random() * itemList.length)]
+    }
+}
+
+
 io.on('connection', function (socket) {
     console.log(socket.id);
     io.emit('CANNON', cannon);
     io.emit('TANK', tank);
     io.emit('STATISTICS', statistics);
+
+    setInterval(() => {
+        if (dataObjects.length >= 10) dataObjects.shift();
+        dataObjects.push(getRandomItem());
+        io.emit('DATA_OBJECTS', dataObjects)
+    }, 5000);
 
     bgColors[socket.id] = '#' + ((1 << 24) * Math.random() | 0).toString(16);
 
@@ -65,7 +85,7 @@ io.on('connection', function (socket) {
     });
 
     socket.on('GO_FORWARD', function () {
-        if(outOfFuel()) return;
+        if (outOfFuel()) return;
         tank.x += -Math.sin((Math.PI / 180) * (tank.angle)) * SPEED;
         tank.y += Math.cos((Math.PI / 180) * (tank.angle)) * SPEED;
         statistics.fuel -= FUEL_COST;
@@ -74,7 +94,7 @@ io.on('connection', function (socket) {
     })
 
     socket.on('GO_BACK', function () {
-        if(outOfFuel()) return;
+        if (outOfFuel()) return;
         tank.x -= -Math.sin((Math.PI / 180) * (tank.angle)) * SPEED;
         tank.y -= Math.cos((Math.PI / 180) * (tank.angle)) * SPEED;
         io.emit('STATISTICS', statistics);
@@ -82,7 +102,7 @@ io.on('connection', function (socket) {
 });
 
 const outOfFuel = () => {
-    if(statistics.fuel > 0) {
+    if (statistics.fuel > 0) {
         statistics.fuel -= FUEL_COST;
         io.emit('TANK', tank);
         return false;
